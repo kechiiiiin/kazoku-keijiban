@@ -7,16 +7,14 @@ compatibility_date = "2026-08-22"
 workers_dev = false
 preview_urls = false
 
-# ⚠️ 仮の値。ドメインを決めたら書き換える（README「埋めるところ」）
 [[routes]]
-pattern = "kazoku-keijiban.example.com"
+pattern = "kazoku-keijiban.kechiiiiin.com"
 custom_domain = true
 
 [[d1_databases]]
 binding = "DB"
 database_name = "kazoku-keijiban"
-# ⚠️ 仮の値。`wrangler d1 create kazoku-keijiban` の出力の database_id に置き換える（README「埋めるところ」）
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "3f1fe907-8695-4e9d-a950-9e26e144d020"
 migrations_dir = "migrations"
 
 [vars]

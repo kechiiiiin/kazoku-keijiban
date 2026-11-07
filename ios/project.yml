@@ -25,8 +25,8 @@ settings:
     # （Makefile が ~/.config/kazoku-keijiban/team-id を読む。秘密ではないので分かったら直書きしてよい）。
     # ⚠️ 無料の Personal Team は入れない（App Group・プッシュ・TestFlight が使えない）
     DEVELOPMENT_TEAM: "${KAZOKU_TEAM_ID}"
-    # Worker の URL（秘密ではない）。ドメインが決まったら入れる（README「埋めるところ」）
-    KAZOKU_SERVER_URL: "https://kazoku-keijiban.example.com"
+    # Worker の URL（秘密ではない）
+    KAZOKU_SERVER_URL: "https://kazoku-keijiban.kechiiiiin.com"
   configs:
     Debug:
       APS_ENVIRONMENT: development
