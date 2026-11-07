@@ -50,7 +50,7 @@ fi
 echo "$R" | ok
 APP=$(echo "$R" | field id)
 AUD=$(echo "$R" | field aud)
-echo "2. Access アプリ $APP_NAME（$HOST）"
+echo "2. Access アプリ ${APP_NAME}（${HOST}）"
 
 # 3. ポリシー（アプリに付いたものを Service Auth の1本にそろえる）
 P="{\"name\":\"family service token\",\"decision\":\"non_identity\",\"precedence\":1,\"include\":[{\"service_token\":{\"token_id\":\"$TID\"}}]}"
