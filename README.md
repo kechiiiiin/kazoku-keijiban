@@ -76,6 +76,8 @@ npx wrangler d1 migrations apply kazoku-keijiban --remote
 
 ### 2. Cloudflare Access
 
+`scripts/setup-access.sh` を1回流すと 1〜4 と Worker の secret（CF_ACCESS_AUD・ACCESS_SERVICE_CLIENT_IDS）まで済む（自動モードでは止まるので手で流す）。手で作る場合:
+
 1. Access のアプリケーション（Self-hosted）を作り、上のドメインを守る
 2. サービストークンを1本作る（Client ID / Client Secret を控える）
 3. アプリのポリシーに「Service Auth」でそのトークンを許可する
