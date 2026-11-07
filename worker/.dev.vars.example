@@ -1,0 +1,5 @@
+# `cp .dev.vars.example .dev.vars` してローカル開発に使う（.dev.vars はコミットしない）
+# 認証の迂回（`npm run dev` は --define __LOCAL_DEV__:true 付きで、localhost のときだけ効く）
+DEV_BYPASS_AUTH=1
+# 押す人の候補（仮の名前でよい）
+MEMBERS=A,B,C,D

@@ -1,0 +1,44 @@
+name = "kazoku-keijiban"
+main = "src/index.ts"
+# wrangler 4.131.2 同梱の workerd が対応する日付（nobu と同じ）
+compatibility_date = "2026-08-22"
+
+# 公開口は Access で守った Custom Domain だけ。workers.dev とプレビュー URL は閉じる
+workers_dev = false
+preview_urls = false
+
+# ⚠️ 仮の値。ドメインを決めたら書き換える（README「埋めるところ」）
+[[routes]]
+pattern = "kazoku-keijiban.example.com"
+custom_domain = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kazoku-keijiban"
+# ⚠️ 仮の値。`wrangler d1 create kazoku-keijiban` の出力の database_id に置き換える（README「埋めるところ」）
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[vars]
+# ウィジェット用プッシュの宛先（apns-topic は `<これ>.push-type.widgets`）
+APNS_BUNDLE_ID = "jp.kechiiiiin.kazoku-keijiban"
+# TestFlight・App Store のビルドは production。Xcode から直接入れた開発ビルドを試すときだけ development
+APNS_ENV = "production"
+
+[observability]
+enabled = true
+
+# Access の JWT の検証は関所（sekisho）に Service Binding の RPC で聞く（src/auth.ts）
+[[services]]
+binding = "SEKISHO"
+service = "sekisho"
+
+# 秘密は `wrangler secret put <名前>` で入れる（ローカルは .dev.vars・コミットしない）:
+#   CF_ACCESS_AUD               Access アプリ kazoku-keijiban の AUD
+#   ACCESS_SERVICE_CLIENT_IDS   通すサービストークンの Client ID（カンマ区切り）。未設定なら1本も通さない
+#   MEMBERS                     押す人の候補（カンマ区切り・アプリの名前選びに出る順）
+#   APNS_KEY                    APNs の .p8 の中身（PEM まるごと）
+#   APNS_KEY_ID                 その鍵の Key ID
+#   APNS_TEAM_ID                Apple Developer の Team ID
+# APNS_* が1つでも欠けているとプッシュは送らない（一覧の読み書きは動く）
+# ⚠️ DEV_BYPASS_AUTH をここ（[vars]）に書かない

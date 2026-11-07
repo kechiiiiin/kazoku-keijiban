@@ -1,0 +1,22 @@
+# 秘密（値はリポジトリに載せない）
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.p8
+.env
+.env.*
+
+# Worker
+node_modules/
+.wrangler/
+
+# iOS（xcodegen の生成物はコミットしない）
+*.xcodeproj
+*.xcworkspace
+build/
+build-sim/
+build-check/
+*.xcresult
+DerivedData/
+
+.DS_Store
