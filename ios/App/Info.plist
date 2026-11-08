@@ -26,6 +26,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>KKAccessClientID</key>
+	<string>$(KK_ACCESS_CLIENT_ID)</string>
+	<key>KKAccessClientSecret</key>
+	<string>$(KK_ACCESS_CLIENT_SECRET)</string>
 	<key>KKServerURL</key>
 	<string>$(KAZOKU_SERVER_URL)</string>
 	<key>LSRequiresIPhoneOS</key>

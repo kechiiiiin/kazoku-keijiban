@@ -139,7 +139,7 @@ final class BoardAPI: @unchecked Sendable {
         var req = URLRequest(url: url)
         req.httpMethod = method
         if !ServerConfig.isLocalDev {
-            guard let id = AccessTokenStore.clientID.load(), let secret = AccessTokenStore.clientSecret.load() else {
+            guard let id = AccessTokenStore.idValue, let secret = AccessTokenStore.secretValue else {
                 throw APIError.notConfigured
             }
             req.setValue(id, forHTTPHeaderField: "CF-Access-Client-Id")

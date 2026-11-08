@@ -18,7 +18,7 @@ ios/      XcodeGen の project.yml・SwiftUI アプリ・WidgetKit 拡張・App 
 | 項目 | どうなっているか |
 | --- | --- |
 | 「今日」 | `board_day` = いまの時刻（JST）− 戻り時刻 の日付。✓ は `board_day` ごとに記録するので cron は要らない |
-| 認証 | Cloudflare Access のサービストークン。Worker は関所（sekisho）の `verify(token, aud, { allowServiceTokens: true })` で確かめ、Client ID を `ACCESS_SERVICE_CLIENT_IDS` と照合（無し・不正は 401、許可外は 403） |
+| 認証 | Cloudflare Access のサービストークン（アーカイブに埋め込み・Keychain の値があればそちら優先）。Worker は関所（sekisho）の `verify(token, aud, { allowServiceTokens: true })` で確かめ、Client ID を `ACCESS_SERVICE_CLIENT_IDS` と照合（無し・不正は 401、許可外は 403） |
 | 押す人の名前 | Worker の secret `MEMBERS`（ソースに家族の名前を置かない）。アプリは `GET /api/board` の `members` から選ぶ |
 | プッシュの間引き | 変更のたびに `push_state.seq` を +1、3 秒待って自分が最後の変更なら送る（D1 の1行で決めるので二重送信しない） |
 | APNs | `.p8` の ES256 で JWT を作り 50 分使い回す。410／BadDeviceToken の端末は台帳から消す |
@@ -113,8 +113,19 @@ Apple Developer → Certificates, Identifiers & Profiles → Keys で「Apple Pu
 - bundle id: アプリ `jp.kechiiiiin.kazoku-keijiban`、ウィジェット `jp.kechiiiiin.kazoku-keijiban.widget`
 - App Group: `group.jp.kechiiiiin.kazoku-keijiban`（アプリとウィジェットの両方。サービストークンもこのグループの Keychain に入る）
 - Push Notifications（`aps-environment`）: アプリとウィジェットの両方
-- Xcode の自動署名で App ID・App Group・Push を作らせる。TestFlight へはアーカイブして上げる
-- サービストークンは、アプリの設定画面に Client ID / Secret を貼る（家族の iPhone）。Mac から流すときはアプリのコンテナの `tmp/` に `kk-import-access-client-id` / `kk-import-access-client-secret` を置くと次の起動で Keychain へ移して消す
+- Xcode の自動署名で App ID・App Group・Push を作らせる。TestFlight へのアーカイブは下の 6
+
+### 6. サービストークン（Access）をアーカイブに埋め込む
+
+家族の iPhone は TestFlight から入れるだけで動く。トークンは**ビルドする Mac のキーチェーン**から `make archive` のときだけ読み、リポジトリには載せない。
+
+1. （初回1回）`scripts/setup-access.sh` で作ったトークンをキーチェーンに入れる（サービス名 `kazoku-keijiban-token`、アカウント `client-id` と `client-secret`）
+2. `cd ios && make archive` … キーチェーンから読む → `ios/Secrets.xcconfig` を生成（gitignore・値は表示しない）→ `xcodegen generate` → `xcodebuild archive`（Release・自動署名・`-allowProvisioningUpdates`・`build/KazokuKeijiban.xcarchive`）。キーチェーンに値が無ければ分かるメッセージで止まる
+3. Xcode Organizer から TestFlight へ上げる（`make upload` は `ExportOptions.plist` が要る雛形）
+
+読み順は **Keychain（App Group）に保存済みの値 → ビルドに埋め込んだ値**。設定画面の手入力、Mac からコンテナの `tmp/` に `kk-import-access-client-id` / `kk-import-access-client-secret` を置く方法（次の起動で Keychain へ移して消す）は、上書き用に残してある。Debug・シミュレータ（`make sim`・`make shots`）は埋め込み無しで従来どおり。
+
+⚠️ トークンを回し直したら（`scripts/setup-access.sh`）、キーチェーンを更新してから `make archive` で**ビルド番号（`CURRENT_PROJECT_VERSION`）を上げて作り直し**、TestFlight へ上げ直す。古いビルドの埋め込み値は無効になる。
 
 ## 決まっていない
 

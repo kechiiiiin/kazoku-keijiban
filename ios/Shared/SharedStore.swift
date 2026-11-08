@@ -100,15 +100,28 @@ struct KeychainSecret {
 }
 
 /// Cloudflare Access のサービストークン（`CF-Access-Client-Id` / `CF-Access-Client-Secret`）
+/// 読む順: Keychain（App Group・設定画面や tmp/ から入れた上書き値）→ ビルドに埋め込んだ値（Info.plist の KKAccessClientID/Secret。
+/// `make archive` がビルドする Mac のキーチェーンから入れる。Debug・シミュレータのビルドでは空）
 enum AccessTokenStore {
     static let clientID = KeychainSecret(account: "cf-access-client-id")
     static let clientSecret = KeychainSecret(account: "cf-access-client-secret")
 
-    static var isComplete: Bool { clientID.isStored && clientSecret.isStored }
+    private static func embedded(_ key: String) -> String? {
+        guard let s = Bundle.main.object(forInfoDictionaryKey: key) as? String else { return nil }
+        let v = s.trimmingCharacters(in: .whitespacesAndNewlines)
+        // 未設定のビルドでは "$(KK_ACCESS_CLIENT_ID)" がそのまま残ることもあるので除く
+        return v.isEmpty || v.hasPrefix("$(") ? nil : v
+    }
+
+    /// 実際に API で使う値（Keychain → 埋め込み）
+    static var idValue: String? { clientID.load() ?? embedded("KKAccessClientID") }
+    static var secretValue: String? { clientSecret.load() ?? embedded("KKAccessClientSecret") }
+
+    static var isComplete: Bool { idValue != nil && secretValue != nil }
 
     /// 画面に出してよい手がかり（Client ID の先頭だけ。シークレットは出さない）
     static var hint: String? {
-        guard let id = clientID.load() else { return nil }
+        guard let id = idValue else { return nil }
         return String(id.prefix(8)) + "…"
     }
 }
