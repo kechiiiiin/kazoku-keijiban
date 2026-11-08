@@ -20,12 +20,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<!-- DEBUG でローカルの Worker（http://127.0.0.1）を見るため。ローカルネットワークだけの例外 -->
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>KKAccessClientID</key>
 	<string>$(KK_ACCESS_CLIENT_ID)</string>
 	<key>KKAccessClientSecret</key>
@@ -34,13 +30,18 @@
 	<string>$(KAZOKU_SERVER_URL)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchScreen</key>
-	<dict/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
+	<key>UILaunchScreen</key>
+	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
